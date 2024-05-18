@@ -29,4 +29,5 @@ jobs:
       env:
         BZM_API_KEY: ${{ secrets.BZM_API_KEY }}
         BZM_API_SECRET: ${{ secrets.BZM_API_SECRET }}
+        BZM_TEST_ID: ${{ secrets.BZM_TEST_ID }}
       run: poetry run pytest

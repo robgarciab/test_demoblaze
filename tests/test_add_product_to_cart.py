@@ -13,7 +13,7 @@ blazegrid_url = 'https://{}:{}@{}/api/v4/grid/wd/hub'.format(API_KEY, API_SECRET
 bzm_options = {
     'blazemeter.sessionName': 'My Test Session',
     'blazemeter.videoEnabled': 'True',
-    'blazemeter.testId': '14141494'
+    'blazemeter.testId': os.getenv('BZM_TEST_ID')
 }
 browser_options = webdriver.FirefoxOptions()
 browser_options.browser_version = 'default'
