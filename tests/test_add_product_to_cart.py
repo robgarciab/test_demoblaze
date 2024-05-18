@@ -92,7 +92,7 @@ def test_add_product_to_cart(driver):
             args['status'] = 'passed'
             args['message'] = 'Product added successfully'
         else:
-            args['status'] = 'fail'
+            args['status'] = 'failed'
             args['message'] = 'Wrong alert text'
     except NoSuchElementException:
         args['status'] = 'broken'
