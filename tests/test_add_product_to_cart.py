@@ -55,8 +55,6 @@ def test_add_product_to_cart(driver):
 
     # Label: Phones
     args['testCaseName'] = 'Phones'
-    del args['status']
-    del args['message']
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
     driver.find_element(By.XPATH, "//*[text() = 'Phones']").click()
     args['status'] = 'passed'
@@ -65,8 +63,6 @@ def test_add_product_to_cart(driver):
 
     # Label: View Product
     args['testCaseName'] = 'View product'
-    del args['status']
-    del args['message']
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
     driver.find_element(By.CSS_SELECTOR, "img.card-img-top.img-fluid").click()
     args['status'] = 'passed'
@@ -75,8 +71,6 @@ def test_add_product_to_cart(driver):
 
     # Label: Add product to cart
     args['testCaseName'] = 'Add product to cart'
-    del args['status']
-    del args['message']
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
     driver.find_element(By.XPATH, "//*[text() = 'Add to cart']").click()
     args['status'] = 'passed'
