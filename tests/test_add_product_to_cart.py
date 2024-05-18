@@ -1,8 +1,10 @@
 import os
 
 from selenium import webdriver
-from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException
+from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import pytest
 
 base = 'a.blazemeter.com'
@@ -33,13 +35,10 @@ def driver():
 
 
 def handle_alert(driver):
-    try:
-        alert = driver.switch_to.alert
-        alert_text = alert.text
-        alert.accept()
-        return alert_text
-    except NoAlertPresentException:
-        return None
+    alert = driver.switch_to.alert
+    alert_text = alert.text
+    alert.accept()
+    return alert_text
 
 
 def test_add_product_to_cart(driver):
@@ -50,9 +49,10 @@ def test_add_product_to_cart(driver):
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
     try:
         driver.get(f"{base_url}/index.html")
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[text()='Phones']")))
         args['status'] = 'passed'
         args['message'] = 'Home page loaded successfully'
-    except NoSuchElementException:
+    except TimeoutException | NoSuchElementException:
         args['status'] = 'broken'
         args['message'] = "Home page didn't load"
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
@@ -87,12 +87,19 @@ def test_add_product_to_cart(driver):
     try:
         driver.find_element(By.XPATH, "//*[text() = 'Add to cart']").click()
         # Handle product added to cart alert
-        handle_alert(driver)
-        args['status'] = 'passed'
-        args['message'] = 'Product added successfully'
+        alert_text = handle_alert(driver)
+        if alert_text == 'Product added':
+            args['status'] = 'passed'
+            args['message'] = 'Product added successfully'
+        else:
+            args['status'] = 'fail'
+            args['message'] = 'Wrong alert text'
     except NoSuchElementException:
         args['status'] = 'broken'
         args['message'] = 'Add to cart element not found'
+    except NoAlertPresentException:
+        args['status'] = 'broken'
+        args['message'] = 'Alert not present'
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
 
     # Label: View cart
