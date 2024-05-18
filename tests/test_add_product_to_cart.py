@@ -1,7 +1,7 @@
 import os
 
 from selenium import webdriver
-from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import NoAlertPresentException, NoSuchElementException
 from selenium.webdriver.common.by import By
 import pytest
 
@@ -48,44 +48,61 @@ def test_add_product_to_cart(driver):
     # Label: Home
     args['testCaseName'] = 'Home'
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
-    driver.get(f"{base_url}/index.html")
-    args['status'] = 'passed'
-    args['message'] = 'Home page loaded successfully'
+    try:
+        driver.get(f"{base_url}/index.html")
+        args['status'] = 'passed'
+        args['message'] = 'Home page loaded successfully'
+    except NoSuchElementException:
+        args['status'] = 'broken'
+        args['message'] = "Home page didn't load"
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
 
     # Label: Phones
     args['testCaseName'] = 'Phones'
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
-    driver.find_element(By.XPATH, "//*[text() = 'Phones']").click()
-    args['status'] = 'passed'
-    args['message'] = 'Phones page loaded successfully'
+    try:
+        driver.find_element(By.XPATH, "//*[text() = 'Phones']").click()
+        args['status'] = 'passed'
+        args['message'] = 'Phones page loaded successfully'
+    except NoSuchElementException:
+        args['status'] = 'broken'
+        args['message'] = 'Phones element not found'
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
 
     # Label: View Product
     args['testCaseName'] = 'View product'
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
-    driver.find_element(By.CSS_SELECTOR, "img.card-img-top.img-fluid").click()
-    args['status'] = 'passed'
-    args['message'] = 'Product page loaded successfully'
+    try:
+        driver.find_element(By.CSS_SELECTOR, "img.card-img-top.img-fluid").click()
+        args['status'] = 'passed'
+        args['message'] = 'Product page loaded successfully'
+    except NoSuchElementException:
+        args['status'] = 'broken'
+        args['message'] = 'Product element not found'
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
 
     # Label: Add product to cart
     args['testCaseName'] = 'Add product to cart'
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
-    driver.find_element(By.XPATH, "//*[text() = 'Add to cart']").click()
-    args['status'] = 'passed'
-    args['message'] = 'Product added successfully'
+    try:
+        driver.find_element(By.XPATH, "//*[text() = 'Add to cart']").click()
+        # Handle product added to cart alert
+        handle_alert(driver)
+        args['status'] = 'passed'
+        args['message'] = 'Product added successfully'
+    except NoSuchElementException:
+        args['status'] = 'broken'
+        args['message'] = 'Add to cart element not found'
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
-
-    # Handle product added to cart alert
-    handle_alert(driver)
 
     # Label: View cart
     args['testCaseName'] = 'View cart'
-    del args['status']
-    del args['message']
     driver.execute_script("/* FLOW_MARKER test-case-start */", args)
-    driver.find_element(By.XPATH, "//*[text() = 'Cart']").click()
-    args['status'] = 'passed'
-    args['message'] = 'Cart page loaded successfully'
+    try:
+        driver.find_element(By.XPATH, "//*[text() = 'Cart']").click()
+        args['status'] = 'passed'
+        args['message'] = 'Cart page loaded successfully'
+    except NoSuchElementException:
+        args['status'] = 'broken'
+        args['message'] = 'Cart element not found'
     driver.execute_script("/* FLOW_MARKER test-case-stop */", args)
